@@ -18,40 +18,6 @@ namespace libORM
 	template<typename T>
 	struct table_mapper
 	{
-
-
-		/**
-		*  Tous les mappages champs-valeurs associés a une requete
-		*/
-		/*class Values : public std::map<std::string, std::string>
-		{
-		private:
-			typedef std::map<std::string, std::string>  values_map;
-
-			class add_to_map
-			{
-				std::map<std::string, std::string>& c_;
-			public:
-
-				add_to_map(values_map& c) : c_(c)
-				{ }
-
-				template<class U>
-				void operator()(const std::string& key, const U& val)
-				{
-					c_.insert(std::make_pair(key, sql_type_converter::to_sql(val)));
-				}
-			};
-
-		public:
-
-			template<class U>
-			boost::assign::list_inserter< add_to_map > add(std::string key, const U& val)
-			{
-				return boost::assign::make_list_inserter(add_to_map(*this))(key, val);
-			}
-		};*/
-
 		/*
 		*  SQL table name
 		*/
