@@ -84,7 +84,7 @@ namespace libORM
 	/**********************************************
 	* Return the ROWID of the most recent insert
 	***********************************************/
-	__int64 sqlite_impl::LastInsertRowId() 
+	int64_t sqlite_impl::LastInsertRowId() 
 	{
 		if (m_pDb)
 		{

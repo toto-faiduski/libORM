@@ -29,7 +29,7 @@ namespace libORM
 		/**
 		* Get the last inserted rowid
 		*/
-		virtual __int64 LastInsertRowId() = 0;
+		virtual int64_t LastInsertRowId() = 0;
 	};
 
 

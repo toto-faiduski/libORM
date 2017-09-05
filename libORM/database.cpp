@@ -74,7 +74,7 @@ namespace libORM
 	//! Commit a SQL transaction.
 	/*!
 	*/
-	void database::CommitTransaction() 
+	void database::CommitTransaction()
 	{
 		int i;
 		char* errmsg = NULL;
@@ -96,7 +96,7 @@ namespace libORM
 	}
 
 
-
+/*
 	void fb(std::ios_base& os, int l)
 	{
 		std::ostream *pos = dynamic_cast<std::ostream*>(&os);
@@ -133,5 +133,5 @@ namespace libORM
 	{
 		return (std::_Smanip<const std::string&>(&fb, no));
 	}
-
+*/
 }

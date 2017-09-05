@@ -2,7 +2,7 @@
 #cmake_policy(SET CMP0026 OLD)
 project (libORM)
 
-#add_definitions(-std=c++11)
+add_definitions(-std=c++11)
 
 # Source files specified path must be relative path from project root and
 # without the closing backslash character
@@ -47,6 +47,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 #target_link_libraries (libastream ${CURL_LIBRARY})
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
+find_package(sqlite)
 
 #find_package(json_spirit REQUIRED)
 #include_directories(${JSON_SPIRIT_INCLUDE_DIR})

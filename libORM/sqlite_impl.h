@@ -21,7 +21,7 @@ namespace libORM
 			virtual void Close();
 
 			virtual int ExecuteSQL( const char *sql, int(*callback)(void*, int, char**, char**), void *p, char **errmsg);
-			virtual __int64 LastInsertRowId();
+			virtual int64_t LastInsertRowId();
 
 	private:
 			sqlite3 *m_pDb;

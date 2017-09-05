@@ -6,6 +6,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
 
+#include "table_mapper.h"
+
 namespace libORM
 {
 
@@ -54,8 +56,8 @@ namespace libORM
 			return ss.str();
 		};
 
-		template<>
-		static std::string to_sql<std::string>(const std::string & t)
+		//template<>
+		static std::string to_sql(const std::string & t)
 		{
 			std::ostringstream ss;
 			ss << "'" << t << "'";

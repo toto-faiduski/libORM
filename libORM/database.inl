@@ -2,6 +2,7 @@
 // database class implementation
 //
 #include "implementation.h"
+#include "table_mapper.h"
 
 namespace libORM
 {
@@ -34,12 +35,12 @@ namespace libORM
 	int database::callback_GetAll(void* pList, int nCol, char** azVals, char** azCols)
 	{
 		auto elem = std::make_shared<_Container::value_type::_Elem>();
-		table_mapper<_Container::value_type::_Elem>::from_datatable(nCol, azVals, azCols, *elem);
-	
+		table_mapper< typename _Container::value_type::_Elem >::from_datatable(nCol, azVals, azCols, *elem);
+
 		back_inserter(*(static_cast<_Container*>(pList))) = elem;
 		return 0;
 	}
-	
+
 	//! Get all/many records from a database table.
 	/*!
 	\param l the container to receive records
@@ -52,21 +53,21 @@ namespace libORM
 		char* errmsg = NULL;
 
 		l.clear();
-		
+
 		// Execute SELECT statement
 		if (szSQL == NULL)
-			i = pimpl_->ExecuteSQL( table_mapper<_Container::value_type::_Elem>::select_sql().c_str(), &database::callback_GetAll<_Container>, &l, &errmsg);
+			i = pimpl_->ExecuteSQL( table_mapper< typename _Container::value_type::_Elem >::select_sql().c_str(), &database::callback_GetAll<_Container>, &l, &errmsg);
 		else
 			i = pimpl_->ExecuteSQL( szSQL, &database::callback_GetAll<_Container>, &l, &errmsg);
 	}
-	
+
 	//! Get an object from a database table.
 	/*!
 	\param id row_id of the record to retreive
 	\param pt the record
 	*/
 	template<class T>
-	void database::Get(__int64 id, std::shared_ptr<T>& pt)
+	void database::Get(int64_t id, std::shared_ptr<T>& pt)
 	{
 		int i;
 		char* errmsg = NULL;
@@ -74,7 +75,7 @@ namespace libORM
 		// Execute UPDATE statement
 		i = pimpl_->ExecuteSQL( table_mapper<T>::select_sql(id).c_str(), &database::callback_Get<T>, &pt, &errmsg);
 	}
-	
+
 	//! Insert an Object into database.
 	/*!
 	\param t the object
@@ -89,7 +90,7 @@ namespace libORM
 		i = pimpl_->ExecuteSQL( table_mapper<T>::insert_sql(t).c_str(), NULL, NULL, &errmsg);
 
 		// Get inserted ID
-		__int64 id = pimpl_->LastInsertRowId();
+		int64_t id = pimpl_->LastInsertRowId();
 		table_mapper<T>::set_rowid(t, id);
 	}
 
@@ -107,14 +108,14 @@ namespace libORM
 		//i = pimpl_->ExecuteSQL( table_mapper<T>::update_sql(t).c_str(), NULL, NULL, &errmsg);
 		Update(t, table_mapper<T>::get_rowid(t));
 	}
-	
+
 	//! Update an Object into database.
 	/*!
 	\param t the object
 	\param id row_id of the object
 	*/
 	template<class T>
-	void database::Update(T& t, __int64 id)
+	void database::Update(T& t, int64_t id)
 	{
 		int i;
 		char* errmsg = NULL;
@@ -142,7 +143,7 @@ namespace libORM
 		sql_statement_list sql;
 		//sql.add( sql_statement("BEGIN TRANSACTION") );
 		sql.add("BEGIN TRANSACTION;");
-		
+
 		sql.add(table_mapper<T>::delete_sql(t));
 
 		sql.add("COMMIT TRANSACTION;");

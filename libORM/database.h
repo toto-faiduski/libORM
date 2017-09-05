@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-
+#include <boost/cstdint.hpp>
 
 namespace libORM
 {
@@ -28,12 +28,12 @@ namespace libORM
 		void Close();
 
 		int ExecuteSQL(const char *sql, int(*callback)(void*, int, char**, char**), void *p, char **errmsg);
-		
+
 		template<class _Container>
 		void Get(_Container& t, const char* szSQL = NULL);
 
 		template<class T>
-		void Get(__int64 id, std::shared_ptr<T>& pt);
+		void Get(int64_t id, std::shared_ptr<T>& pt);
 
 		template<class T>
 		void Insert(T& t);
@@ -42,7 +42,7 @@ namespace libORM
 		void Update(T& t);
 
 		template<class T>
-		void Update(T& t, __int64 id);
+		void Update(T& t, int64_t id);
 
 		template<class T>
 		void Remove(T& t);

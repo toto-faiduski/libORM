@@ -4,7 +4,7 @@
 #include <list>
 //#include <numeric>
 
-#include <iomanip>  
+#include <iomanip>
 
 namespace libORM
 {
@@ -15,13 +15,13 @@ namespace libORM
 	{
 	public:
 		sql_statement() {}
-		explicit sql_statement(const _Mystr& _Str) : std::ostringstream(_Str) {}
+		//explicit sql_statement(const _Mystr& _Str) : std::ostringstream(_Str) {}
 	};
 
 
 
-	std::_Smanip<int>	__cdecl param(int no);
-	std::_Smanip<const std::string&>	__cdecl param(const std::string& no);
+	//std::_Smanip<int>	__cdecl param(int no);
+	//std::_Smanip<const std::string&>	__cdecl param(const std::string& no);
 
 
 	/**

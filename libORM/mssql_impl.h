@@ -34,7 +34,7 @@ namespace libORM
 		virtual int ExecuteSQL(const char *sql, int(*callback)(void*, int, char**, char**), void *p, char **errmsg) {
 			throw std::logic_error("Function not yet implemented.");
 		}
-		virtual __int64 LastInsertRowId() {
+		virtual int64_t LastInsertRowId() {
 			throw std::logic_error("Function not yet implemented.");
 		}
 	private:

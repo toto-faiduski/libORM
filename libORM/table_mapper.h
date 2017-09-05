@@ -8,6 +8,7 @@
 #include <boost/assign/list_of.hpp>
 
 #include "sql_statement.h"
+//#include "sql_type_converter.h"
 
 namespace libORM
 {
@@ -22,7 +23,7 @@ namespace libORM
 		/**
 		*  Tous les mappages champs-valeurs associés a une requete
 		*/
-		class Values : public std::map<std::string, std::string>
+		/*class Values : public std::map<std::string, std::string>
 		{
 		private:
 			typedef std::map<std::string, std::string>  values_map;
@@ -35,8 +36,8 @@ namespace libORM
 				add_to_map(values_map& c) : c_(c)
 				{ }
 
-				template<class T>
-				void operator()(const std::string& key, const T& val)
+				template<class U>
+				void operator()(const std::string& key, const U& val)
 				{
 					c_.insert(std::make_pair(key, sql_type_converter::to_sql(val)));
 				}
@@ -44,12 +45,12 @@ namespace libORM
 
 		public:
 
-			template<class T>
-			boost::assign::list_inserter< add_to_map > add(std::string key, const T& val)
+			template<class U>
+			boost::assign::list_inserter< add_to_map > add(std::string key, const U& val)
 			{
 				return boost::assign::make_list_inserter(add_to_map(*this))(key, val);
 			}
-		};
+		};*/
 
 		/*
 		*  SQL table name
@@ -59,7 +60,7 @@ namespace libORM
 		/*
 		*  Set ROWID
 		*/
-		static void set_rowid(T & t,__int64 id)
+		static void set_rowid(T & t,int64_t id)
 		{
 			t.ID = id;
 		}
@@ -67,7 +68,7 @@ namespace libORM
 		/*
 		*  Get ROWID
 		*/
-		static __int64 get_rowid(const T & t)
+		static int64_t get_rowid(const T & t)
 		{
 			return t.ID;
 		}
@@ -90,7 +91,7 @@ namespace libORM
 		*  Write to table
 		*/
 		static void to_datatable(int nCol, char** azVals, char** azCols, const T & t);
-		
+
 		/*
 		*  Default SQl SELECT statement
 		*/
@@ -100,11 +101,11 @@ namespace libORM
 			sql << "SELECT * FROM " << table_name;
 			return sql.str();
 		}
-		
+
 		/*
 		*  Default SQl SELECT statement
 		*/
-		static std::string select_sql(__int64 id)
+		static std::string select_sql(int64_t id)
 		{
 			sql_statement sql;
 			sql << "SELECT * FROM " << table_name << " WHERE ID=" << id << ";";
@@ -141,7 +142,7 @@ namespace libORM
 			return update_sql(t,get_rowid(t));
 		}
 
-		static std::string update_sql(const T& t, __int64 id)
+		static std::string update_sql(const T& t, int64_t id)
 		{
 			sql_statement sql;
 			std::map< std::string, std::string >  values = get_values(t);
