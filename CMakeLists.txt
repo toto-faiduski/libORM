@@ -2,6 +2,7 @@
 #cmake_policy(SET CMP0026 OLD)
 project (libORM)
 
+
 add_definitions(-std=c++11)
 
 # Source files specified path must be relative path from project root and
