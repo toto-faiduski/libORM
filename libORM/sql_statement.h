@@ -15,7 +15,7 @@ namespace libORM
 	{
 	public:
 		sql_statement() {}
-		//explicit sql_statement(const _Mystr& _Str) : std::ostringstream(_Str) {}
+		explicit sql_statement(const std::basic_string<char>& _Str) : std::ostringstream(_Str) {}
 	};
 
 
