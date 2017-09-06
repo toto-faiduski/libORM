@@ -16,7 +16,7 @@ namespace libORM
 	public:
 
 		// A factory function for a SQLite database
-		static std::shared_ptr<database> CreateSQLiteDatabase(const char *a_saDatabasePath);
+		static std::shared_ptr<database> CreateSQLiteDatabase(const char *a_DatabasePath);
 
 		// A factory function for a MSSQL Server database
 		static std::shared_ptr<database> CreateMSSQLDatabase(const char *a_Server, const char *a_Database);

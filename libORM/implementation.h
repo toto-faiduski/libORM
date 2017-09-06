@@ -3,9 +3,8 @@
 namespace libORM
 {
 
-	/*! \brief brief description.
-	*
-	* A base class for all kind of SQL implementations.
+	/**
+	 * \brief A base class for all kind of SQL implementations.
 	*/
 	class implementation {
 	public:

@@ -7,12 +7,14 @@
 namespace libORM
 {
 
-	//! Generic callback for sql request.
-	/*!
-	\param pArg the object to receive the unique record
-	\param nCol the number of columns in the result
-	\param azVals an array of pointers to strings, one for each column, where each entry represents the value of corresponding result column
-	\param azCols an array of pointers to strings, one for each column, where each entry represents the name of corresponding result column
+	/**
+	 * \brief Generic callback for sql request.
+	 *
+	 * \tparam T the type of object to get
+	 * \param pArg the object to receive the unique record
+	 * \param nCol the number of columns in the result
+	 * \param azVals an array of pointers to strings, one for each column, where each entry represents the value of corresponding result column
+	 * \param azCols an array of pointers to strings, one for each column, where each entry represents the name of corresponding result column
 	*/
 	template<class T>
 	int database::callback_Get(void* pArg, int nCol, char** azVals, char** azCols)
@@ -24,12 +26,14 @@ namespace libORM
 		return 0;
 	}
 
-	//! Generic callback for sql request.
-	/*!
-	\param pList the container to receive records
-	\param nCol the number of columns in the result
-	\param azVals an array of pointers to strings, one for each column, where each entry represents the value of corresponding result column
-	\param azCols an array of pointers to strings, one for each column, where each entry represents the name of corresponding result column
+	/**
+	 * \brief Generic callback for sql request.
+	 * 
+	 * \tparam _Container the type of object container to get
+	 * \param pList the container to receive records
+	 * \param nCol the number of columns in the result
+	 * \param azVals an array of pointers to strings, one for each column, where each entry represents the value of corresponding result column
+	 * \param azCols an array of pointers to strings, one for each column, where each entry represents the name of corresponding result column
 	*/
 	template<class _Container>
 	int database::callback_GetAll(void* pList, int nCol, char** azVals, char** azCols)
@@ -41,10 +45,12 @@ namespace libORM
 		return 0;
 	}
 
-	//! Get all/many records from a database table.
-	/*!
-	\param l the container to receive records
-	\param szSQL an optional sql statement
+	/**
+	 * \brief Get all/many records from a database table.
+	 * 
+	 * \tparam _Container the type of object container to get
+	 * \param l the container to receive records
+	 * \param szSQL an optional sql statement
 	*/
 	template<class _Container>
 	void database::Get(_Container& l, const char* szSQL /*= NULL*/)
@@ -61,10 +67,12 @@ namespace libORM
 			i = pimpl_->ExecuteSQL( szSQL, &database::callback_GetAll<_Container>, &l, &errmsg);
 	}
 
-	//! Get an object from a database table.
-	/*!
-	\param id row_id of the record to retreive
-	\param pt the record
+	/**
+	 * \brief Get an object from a database table.
+	 * 
+	 * \tparam T the type of object to get
+	 * \param id row_id of the record to retreive
+	 * \param pt the record
 	*/
 	template<class T>
 	void database::Get(int64_t id, std::shared_ptr<T>& pt)
@@ -76,9 +84,11 @@ namespace libORM
 		i = pimpl_->ExecuteSQL( table_mapper<T>::select_sql(id).c_str(), &database::callback_Get<T>, &pt, &errmsg);
 	}
 
-	//! Insert an Object into database.
-	/*!
-	\param t the object
+	/**
+	 * \brief Insert an Object into database.
+	 *
+	 * \tparam T the type of object to insert
+	 * \param t the object
 	*/
 	template<class T>
 	void database::Insert(T& t)
@@ -94,9 +104,11 @@ namespace libORM
 		table_mapper<T>::set_rowid(t, id);
 	}
 
-	//! Update an Object into database.
-	/*!
-	\param t the object
+	/**
+	 * \brief Update an Object into database.
+	 *
+	 * \tparam T the type of object to update
+	 * \param t the object
 	*/
 	template<class T>
 	void database::Update(T& t)
@@ -109,10 +121,12 @@ namespace libORM
 		Update(t, table_mapper<T>::get_rowid(t));
 	}
 
-	//! Update an Object into database.
-	/*!
-	\param t the object
-	\param id row_id of the object
+	/**
+	 * \brief Update an Object into database.
+	 * 
+	 * \tparam T the type of object to update
+	 * \param t the object
+	 * \param id row_id of the object
 	*/
 	template<class T>
 	void database::Update(T& t, int64_t id)
@@ -124,9 +138,11 @@ namespace libORM
 		i = pimpl_->ExecuteSQL( table_mapper<T>::update_sql(t, id).c_str(), NULL, NULL, &errmsg);
 	}
 
-	//! Remove an Object from database.
-	/*!
-	\param t the object
+	/**
+	 * \brief Remove an Object from database.
+	 *
+	 * \tparam T the type of object to remove
+	 * \param t the object
 	*/
 	template<class T>
 	void database::Remove(T& t)
