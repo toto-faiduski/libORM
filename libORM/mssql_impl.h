@@ -17,8 +17,8 @@ namespace libORM
 		/**
 		 * Construct a MSSQL implementation.
 		 *
-		 * \param a_szServer server name
-		 * \param a_szDatabase database name
+		 * @param a_szServer server name
+		 * @param a_szDatabase database name
 		*/
 		explicit mssql_impl(const char* a_szServer, const char* a_szDatabase)
 		: m_szServer(a_szServer)

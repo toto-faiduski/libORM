@@ -19,7 +19,7 @@ namespace libORM
 	public:
 		//! Construct a sql_date_time
 		/*!
-		\param a_t time
+		@param a_t time
 		*/
 		sql_date_time(const std::time_t & a_t):m_t(a_t){}
 

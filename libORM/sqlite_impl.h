@@ -11,7 +11,7 @@ namespace libORM
 	/**
 	* Construct a SQLite implementation.
 	*
-	* \param a_szDatabasePath Path to the database file
+	* @param a_szDatabasePath Path to the database file
 	*/
 	class sqlite_impl : public implementation
 	{

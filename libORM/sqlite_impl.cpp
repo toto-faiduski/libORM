@@ -9,7 +9,7 @@ namespace libORM
 	/**********************************************/
 	//! Construct a SQLITE implementation.
 	/*!
-	\param a_szDatabasePath Path to the database file
+	@param a_szDatabasePath Path to the database file
 	*/
 	/**********************************************/
 	sqlite_impl::sqlite_impl(const char* a_szDatabasePath)
@@ -60,10 +60,10 @@ namespace libORM
 	/**********************************************/
 	//! Execute a SQL statement
 	/*!
-	\param sql sql statement
-	\param callback sql statement
-	\param p sql statement
-	\param errmsg sql statement
+	@param sql sql statement
+	@param callback sql statement
+	@param p sql statement
+	@param errmsg sql statement
 	*/
 	/**********************************************/
 	int sqlite_impl::ExecuteSQL(

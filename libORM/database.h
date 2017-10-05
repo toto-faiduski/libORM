@@ -67,3 +67,19 @@ namespace libORM
 }
 
 #include "database.inl"
+
+
+int GetSystemIdentifier(unsigned char uuid[16])
+{
+	return 12;
+}
+
+
+int EncryptData(
+	const unsigned char *pSrc,
+	size_t iSrcLen,
+	unsigned char **ppDst,
+	size_t *pDstLen)
+{
+
+}

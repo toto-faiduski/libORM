@@ -2,7 +2,9 @@
 #cmake_policy(SET CMP0026 OLD)
 project (libORM)
 
-
+enable_testing()
+add_test( testname Exename arg1 arg2 ... )
+ 
 add_definitions(-std=c++11)
 
 # Source files specified path must be relative path from project root and
@@ -29,14 +31,16 @@ if(MSVC)
 #	set(BOOST_ROOT			"C:/local/boost_1_60_0" )
 #	set(BOOST_LIBRARYDIR	"C:/local/boost_1_60_0/lib32-msvc-10.0" )
 
-#	set(BOOST_ROOT			"D:/Develops/ThirdParty/Boost/boost_1_64_0" )
-#	set(BOOST_LIBRARYDIR	"D:/Develops/ThirdParty/Boost/boost_1_64_0/lib32-msvc-14.1" )
+	set(BOOST_ROOT			"D:/Develops/ThirdParty/Boost/boost_1_64_0" )
+	set(BOOST_LIBRARYDIR	"D:/Develops/ThirdParty/Boost/boost_1_64_0/lib32-msvc-14.1" )
 
 #	set(CURL_INCLUDE_DIR	"D:/Develops/ThirdParty/curl/libcurl-7.49.1-vc14-x64/include" )
 #	set(CURL_LIBRARY		"D:/Develops/ThirdParty/curl/libcurl-7.49.1-vc14-x64/lib" )
 
 #	set(JSON_SPIRIT_INCLUDE_DIR	"D:/Develops/ThirdParty/JSON Spirit/JsonParser_v4.08/Source" )
 #	set(JSON_SPIRIT_LIBRARY		"D:/Develops/ThirdParty/curl/libcurl-7.49.1-vc14-x64/lib" )
+
+	set(SQLITE_INCLUDE_DIR "D:/Develops/ThirdParty/SQLIte/3.19.2.0")
 endif()
 
 find_package(Boost)
@@ -50,6 +54,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 find_package(sqlite)
+include_directories(${SQLITE_INCLUDE_DIR})
 
 #find_package(json_spirit REQUIRED)
 #include_directories(${JSON_SPIRIT_INCLUDE_DIR})

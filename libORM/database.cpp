@@ -14,10 +14,10 @@ namespace libORM
 	}
 
    /**
-	 * \brief A factory function for a SQLite database.
+	 * @brief A factory function for a SQLite database.
 	 *
-	 *	\param a_DatabasePath database file path
-	 *	\return a database object
+	 *	@param a_DatabasePath database file path
+	 *	@return a database object
 	 *
 	 * Create a specific database mapper to a SQLite3 database
 	*/
@@ -27,11 +27,11 @@ namespace libORM
 	}
 
    /**
-	 * \brief A factory function for a MSSQL Server database.
+	 * @brief A factory function for a MSSQL Server database.
 	 *
-	 *	\param a_Server server name
-	 *	\param a_Database database name
-	 *	\return a database object
+	 *	@param a_Server server name
+	 *	@param a_Database database name
+	 *	@return a database object
 	*/
 	std::shared_ptr<database> database::CreateMSSQLDatabase(const char *a_Server, const char *a_Database)
 	{
@@ -39,7 +39,7 @@ namespace libORM
 	}
 
 	/**
-	* \brief Open the database.
+	* @brief Open the database.
 	*/
 	void database::Open()
 	{
@@ -47,7 +47,7 @@ namespace libORM
 	}
 
 	/**
-	* \brief Close the database.
+	* @brief Close the database.
 	*/
 	void database::Close()
 	{
@@ -55,13 +55,13 @@ namespace libORM
 	}
 
 	/**
-	 * \brief Execute a SQL statement.
+	 * @brief Execute a SQL statement.
 	 *
-	 * \param sql SQL statement
-	 * \param callback callback
-	 * \param p private data
-	 * \param errmsg error message
-	 * \return error code
+	 * @param sql SQL statement
+	 * @param callback callback
+	 * @param p private data
+	 * @param errmsg error message
+	 * @return error code
 	*/
 	int database::ExecuteSQL(const char *sql, int(*callback)(void*, int, char**, char**), void *p, char **errmsg)
 	{
@@ -69,7 +69,7 @@ namespace libORM
 	}
 
 	/**
-	 * \brief Begin a SQL transaction.
+	 * @brief Begin a SQL transaction.
 	*/
 	void database::BeginTransaction()
 	{
@@ -81,7 +81,7 @@ namespace libORM
 	}
 
 	/**
-	 * \brief Commit a SQL transaction.
+	 * @brief Commit a SQL transaction.
 	*/
 	void database::CommitTransaction()
 	{
@@ -93,7 +93,7 @@ namespace libORM
 	}
 
 	/**
-	 * \brief Rollback a SQL transaction.
+	 * @brief Rollback a SQL transaction.
 	*/
 	void database::RollbackTransaction()
 	{
