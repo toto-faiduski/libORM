@@ -9,14 +9,25 @@
 namespace libORM
 {
 	/**
-	* Construct a SQLite implementation.
-	*
-	* @param a_szDatabasePath Path to the database file
+	* A SQLite implemantation of SQL
 	*/
 	class sqlite_impl : public implementation
 	{
 		public:
+			/**
+			* Construct a SQLite implementation.
+			*
+			* @param a_szDatabasePath Path to the database file
+			*/
 			explicit sqlite_impl(const char* a_szDatabasePath);
+
+			/**
+			* Construct a SQLite implementation.
+			*
+			* @param a_strDatabasePath Path to the database file
+			*/
+			explicit sqlite_impl(const std::string& a_strDatabasePath);
+
 			~sqlite_impl();
 
 			virtual void Open();
@@ -27,7 +38,7 @@ namespace libORM
 
 	private:
 			sqlite3 *m_pDb;
-			std::string m_szDatabasePath;
+			std::string m_strDatabasePath;
 
 			template<typename T>
 			inline void SQLITE_ASSERT(const T& i)

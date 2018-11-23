@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <boost/cstdint.hpp>
+#include <cstdint>
+#include <string>
 
 namespace libORM
 {
@@ -17,9 +18,11 @@ namespace libORM
 
 		// A factory function for a SQLite database
 		static std::shared_ptr<database> CreateSQLiteDatabase(const char *a_DatabasePath);
+		static std::shared_ptr<database> CreateSQLiteDatabase(const std::string& a_strDatabasePath);
 
 		// A factory function for a MSSQL Server database
 		static std::shared_ptr<database> CreateMSSQLDatabase(const char *a_Server, const char *a_Database);
+		static std::shared_ptr<database> CreateMSSQLDatabase(const std::string& a_Server, const std::string& a_Database);
 
 		// Open the database
 		void Open();
@@ -32,8 +35,8 @@ namespace libORM
 		template<class _Container>
 		void Get(_Container& t, const char* szSQL = NULL);
 
-		template<class T>
-		void Get(int64_t id, std::shared_ptr<T>& pt);
+		template<class T, class Id>
+		void Get(Id id, std::shared_ptr<T>& pt);
 
 		template<class T>
 		void Insert(T& t);
@@ -41,11 +44,15 @@ namespace libORM
 		template<class T>
 		void Update(T& t);
 
-		template<class T>
-		void Update(T& t, int64_t id);
+		template<class T, class Id>
+		void Update(T& t, Id id);
 
+		template<class T, class Id>
+		void Remove(Id id);
 		template<class T>
 		void Remove(T& t);
+		template<class T>
+		void Remove(std::shared_ptr<T>& t);
 
 		void BeginTransaction();
 		void CommitTransaction();
@@ -67,19 +74,3 @@ namespace libORM
 }
 
 #include "database.inl"
-
-
-int GetSystemIdentifier(unsigned char uuid[16])
-{
-	return 12;
-}
-
-
-int EncryptData(
-	const unsigned char *pSrc,
-	size_t iSrcLen,
-	unsigned char **ppDst,
-	size_t *pDstLen)
-{
-
-}

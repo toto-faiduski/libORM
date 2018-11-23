@@ -37,6 +37,9 @@ namespace libORM
 	*/
 	struct sql_type_converter
 	{
+		/**
+		* Default converter
+		*/
 		template<typename T>
 		static std::string to_sql(const T & t)
 		{
@@ -45,18 +48,9 @@ namespace libORM
 			return ss.str();
 		}
 
-		template<typename T>
-		static std::string to_sql(const std::shared_ptr<T>& t)
-		{
-			std::ostringstream ss;
-			if(!t)
-				ss << "NULL";
-			else
-				ss << to_sql( table_mapper<T>::get_rowid(*t.get()));
-			return ss.str();
-		};
-
-		//template<>
+		/**
+		* String converter
+		*/
 		static std::string to_sql(const std::string & t)
 		{
 			std::ostringstream ss;
@@ -75,6 +69,9 @@ namespace libORM
 		//	return std::string(szDate);
 		//};
 
+		/**
+		* Generic optional value converter
+		*/
 		template<typename T>
 		static std::string to_sql(const boost::optional<T> & t)
 		{
@@ -84,26 +81,71 @@ namespace libORM
 				return "NULL";
 		}
 
-		//template<>
-		//static std::string to_sql(const std::time_t & a_t)
-		static std::string to_sql_time(const std::time_t & a_t)
-		{
-			struct tm t = { 0 };
-			gmtime_s(&t, &a_t);
-			char szDate[512];
-			strftime(szDate, 512, "'%Y-%m-%d %H:%M:%S'", &t);
-			return std::string(szDate);
-		};
-
-		static std::string to_sql_time(const boost::optional<std::time_t> & t)
+		/**
+		* Generic optional value converter
+		*/
+		template<typename T>
+		static std::string to_sql(const std::shared_ptr<T>& t)
 		{
 			if (t)
-				return to_sql_time(*t);
+				return to_sql(*t);
+			else
+				return "NULL";
+		};
+
+		/**
+		* Unix date converter
+		*/
+		static std::string to_sql_datetime(const std::time_t & a_t)
+		{
+			std::ostringstream ss;
+			ss << "datetime(" << a_t << ",'unixepoch')";
+			return ss.str();
+
+			//struct tm t = { 0 };
+			//gmtime_s(&t, &a_t);
+			//char szDate[512];
+			//strftime(szDate, 512, "'%Y-%m-%d %H:%M:%S'", &t);
+			//return std::string(szDate);
+		};
+
+		/**
+		* Julian date converter
+		*/
+		static std::string to_sql_datetime(const double& a_t)
+		{
+			std::ostringstream ss;
+			ss << "datetime(" << a_t << ")";
+			return ss.str();
+		}
+		
+		/**
+		* Optional date converter
+		*/
+		template< typename T>
+		static std::string to_sql_datetime(const boost::optional<T> & t)
+		{
+			if (t)
+				return to_sql_datetime(*t);
+			else
+				return "NULL";
+		}
+		
+		/**
+		* Optional date converter
+		*/
+		template< typename T>
+		static std::string to_sql_datetime(const std::shared_ptr<T> & t)
+		{
+			if (t)
+				return to_sql_datetime(*t);
 			else
 				return "NULL";
 		}
 
-		// Generic member
+		/**
+		* Default converter
+		*/
 		template<typename T>
 		static void from_sql(T & t, const char* value)
 		{
@@ -111,7 +153,9 @@ namespace libORM
 				t = boost::lexical_cast<T>(value);
 		}
 
-		// Generic optional member
+		/**
+		* Generic optional value converter
+		*/
 		template<typename T>
 		static void from_sql(boost::optional<T> & a_t, const char* value)
 		{
@@ -122,9 +166,22 @@ namespace libORM
 			a_t = t;
 		}
 
-		// DateTime member
-		//template<>
-		//static void from_sql(time_t & a_t, const char* value)
+		/**
+		* Generic optional value converter
+		*/
+		template<typename T>
+		static void from_sql(std::shared_ptr<T> & a_t, const char* value)
+		{
+			if (value == nullptr)
+				return;
+			T t;
+			from_sql(t, value);
+			a_t = std::make_shared<T>(t);
+		}
+
+		/**
+		* Unix date converter
+		*/
 		static void from_sql_time(time_t & a_t, const char* value)
 		{
 			if (value == nullptr)
@@ -136,6 +193,9 @@ namespace libORM
 			a_t = _mkgmtime(&t);
 		}
 
+		/**
+		* Optional Unix date converter
+		*/
 		static void from_sql_time(boost::optional<time_t> & a_t, const char* value)
 		{
 			if (value == nullptr)
@@ -145,21 +205,33 @@ namespace libORM
 			a_t = t;
 		}
 
-		// Complex member
-		template<typename T>
-		static void from_sql(std::shared_ptr<T> & t, const char* value)
+		/**
+		* Optional Unix date converter
+		*/
+		static void from_sql_time(std::shared_ptr<time_t> & a_t, const char* value)
 		{
 			if (value == nullptr)
 				return;
-			if (t == nullptr) t = std::make_shared<T>();
-			from_sql(t->ID, value);
+			time_t t;
+			from_sql_time(t, value);
+			a_t = std::make_shared<time_t>(t);
 		}
+
+		// Complex member
+		//template<typename T>
+		//static void from_sql(std::shared_ptr<T> & t, const char* value)
+		//{
+		//	if (value == nullptr)
+		//		return;
+		//	if (t == nullptr) t = std::make_shared<T>();
+		//	from_sql(t->ID, value);
+		//}
 	};
 
 	/**
 	*  Tous les mappages champs-valeurs associés a une requete
 	*/
-	class Values : public std::map<std::string, std::string>
+	/*class Values : public std::map<std::string, std::string>
 	{
 	private:
 		typedef std::map<std::string, std::string>  values_map;
@@ -177,6 +249,13 @@ namespace libORM
 			{
 				c_.insert(std::make_pair(key, sql_type_converter::to_sql(val)));
 			}
+
+			!!! ne marche pas pour les time_t !!!
+			template<>
+			void operator()(const std::string& key, const time_t& val)
+			{
+				c_.insert(std::make_pair(key, sql_type_converter::to_sql_datetime(val)));
+			}
 		};
 
 	public:
@@ -186,6 +265,6 @@ namespace libORM
 		{
 			return boost::assign::make_list_inserter(add_to_map(*this))(key, val);
 		}
-	};
+	};*/
 
 }

@@ -26,7 +26,20 @@ namespace libORM
 		return std::shared_ptr<database>(new database(new sqlite_impl(a_DatabasePath)));
 	}
 
-   /**
+	/**
+	 * @brief A factory function for a SQLite database.
+	 *
+	 *	@param a_strDatabasePath database file path
+	 *	@return a database object
+	 *
+	 * Create a specific database mapper to a SQLite3 database
+	*/
+	std::shared_ptr<database> database::CreateSQLiteDatabase(const std::string& a_strDatabasePath)
+	{
+		return std::shared_ptr<database>(new database(new sqlite_impl(a_strDatabasePath)));
+	}
+
+	/**
 	 * @brief A factory function for a MSSQL Server database.
 	 *
 	 *	@param a_Server server name
@@ -34,6 +47,18 @@ namespace libORM
 	 *	@return a database object
 	*/
 	std::shared_ptr<database> database::CreateMSSQLDatabase(const char *a_Server, const char *a_Database)
+	{
+		return std::shared_ptr<database>(new database(new mssql_impl(a_Server, a_Database)));
+	}
+
+	/**
+	 * @brief A factory function for a MSSQL Server database.
+	 *
+	 *	@param a_Server server name
+	 *	@param a_Database database name
+	 *	@return a database object
+	*/
+	std::shared_ptr<database> database::CreateMSSQLDatabase(const std::string& a_Server, const std::string& a_Database)
 	{
 		return std::shared_ptr<database>(new database(new mssql_impl(a_Server, a_Database)));
 	}

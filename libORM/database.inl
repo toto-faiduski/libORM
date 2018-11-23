@@ -38,8 +38,8 @@ namespace libORM
 	template<class _Container>
 	int database::callback_GetAll(void* pList, int nCol, char** azVals, char** azCols)
 	{
-		auto elem = std::make_shared<_Container::value_type::_Elem>();
-		table_mapper< typename _Container::value_type::_Elem >::from_datatable(nCol, azVals, azCols, *elem);
+		auto elem = std::make_shared<_Container::value_type::element_type>();
+		table_mapper< _Container::value_type::element_type >::from_datatable(nCol, azVals, azCols, *elem);
 
 		back_inserter(*(static_cast<_Container*>(pList))) = elem;
 		return 0;
@@ -62,7 +62,7 @@ namespace libORM
 
 		// Execute SELECT statement
 		if (szSQL == NULL)
-			i = pimpl_->ExecuteSQL( table_mapper< typename _Container::value_type::_Elem >::select_sql().c_str(), &database::callback_GetAll<_Container>, &l, &errmsg);
+			i = pimpl_->ExecuteSQL( table_mapper< _Container::value_type::element_type >::select_sql().c_str(), &database::callback_GetAll<_Container>, &l, &errmsg);
 		else
 			i = pimpl_->ExecuteSQL( szSQL, &database::callback_GetAll<_Container>, &l, &errmsg);
 	}
@@ -71,11 +71,12 @@ namespace libORM
 	 * @brief Get an object from a database table.
 	 * 
 	 * @tparam T the type of object to get
+	 * @tparam Id Id is the primary key's type.
 	 * @param id row_id of the record to retreive
 	 * @param pt the record
 	*/
-	template<class T>
-	void database::Get(int64_t id, std::shared_ptr<T>& pt)
+	template<class T, class Id>
+	void database::Get(Id id, std::shared_ptr<T>& pt)
 	{
 		int i;
 		char* errmsg = NULL;
@@ -100,8 +101,7 @@ namespace libORM
 		i = pimpl_->ExecuteSQL( table_mapper<T>::insert_sql(t).c_str(), NULL, NULL, &errmsg);
 
 		// Get inserted ID
-		int64_t id = pimpl_->LastInsertRowId();
-		table_mapper<T>::set_rowid(t, id);
+		t.*table_mapper<T>::rowid() = pimpl_->LastInsertRowId();
 	}
 
 	/**
@@ -113,23 +113,19 @@ namespace libORM
 	template<class T>
 	void database::Update(T& t)
 	{
-		//int i;
-		//char* errmsg = NULL;
-
-		// Execute UPDATE statement
-		//i = pimpl_->ExecuteSQL( table_mapper<T>::update_sql(t).c_str(), NULL, NULL, &errmsg);
-		Update(t, table_mapper<T>::get_rowid(t));
+		Update(t, t.*table_mapper<T>::rowid());
 	}
 
 	/**
 	 * @brief Update an Object into database.
 	 * 
 	 * @tparam T the type of object to update
+	 * @tparam Id Id is the primary key's type.
 	 * @param t the object
 	 * @param id row_id of the object
 	*/
-	template<class T>
-	void database::Update(T& t, int64_t id)
+	template<class T, class Id>
+	void database::Update(T& t, Id id)
 	{
 		int i;
 		char* errmsg = NULL;
@@ -141,33 +137,50 @@ namespace libORM
 	/**
 	 * @brief Remove an Object from database.
 	 *
+	 * @tparam T T is an object's type. Must be specified explicitly.
+	 * @tparam Id Id is the primary key's type.
+	 * @param id id of object to be removed.
+	 */
+	template<class T, class Id>
+	void database::Remove(Id id)
+	{
+		int i;
+		char* errmsg = NULL;
+		sql_statement_list sql;
+		sql.add(table_mapper<T>::delete_sql(id));
+
+		// Execute DELETE statement
+		i = pimpl_->ExecuteSQL(sql.str().c_str(), NULL, NULL, &errmsg);
+	}
+
+	/**
+	 * @brief Remove an Object from database.
+	 *
 	 * @tparam T the type of object to remove
 	 * @param t the object
-	*/
+	 */
 	template<class T>
 	void database::Remove(T& t)
 	{
 		int i;
 		char* errmsg = NULL;
-
-		//sql_statement sql;
-		//sql << "BEGIN TRANSACTION;" << std::endl;
-		//sql << table_mapper<T>::delete_sql(t) << std::endl;
-		//sql << "COMMIT TRANSACTION;" << std::endl;
-
-
 		sql_statement_list sql;
-		//sql.add( sql_statement("BEGIN TRANSACTION") );
-		sql.add("BEGIN TRANSACTION;");
-
 		sql.add(table_mapper<T>::delete_sql(t));
-
-		sql.add("COMMIT TRANSACTION;");
-
 
 		// Execute DELETE statement
 		i = pimpl_->ExecuteSQL(sql.str().c_str(), NULL, NULL, &errmsg);
-		//i = pimpl_->ExecuteSQL( table_mapper<T>::delete_sql(t).c_str(), NULL, NULL, &errmsg);
 	}
 
+	/**
+	* @brief Remove an Object from database.
+	*
+	* @tparam T the type of object to remove
+	* @param t the object
+	*/
+	template<class T>
+	void database::Remove(std::shared_ptr<T>& t)
+	{
+		if (t)
+			Remove(*t);
+	}
 }

@@ -2,131 +2,140 @@
 
 #include <map>
 #include <string>
+#include <memory>
 
-#include <boost/config/suffix.hpp>
 #include <boost/assign/list_inserter.hpp>
 #include <boost/assign/list_of.hpp>
 
 #include "sql_statement.h"
 //#include "sql_type_converter.h"
 
+#include "column_mapper.h"
+
 namespace libORM
 {
 	/**
 	* SQL Table mapper to C++ type
+	*
+	* @tparam T T is an object's type.
+	* @tparam Id Id is the primary key's type.
 	*/
-	template<typename T>
+	template<typename T, typename Id=int64_t>
 	struct table_mapper
 	{
-		/*
-		*  SQL table name
+		/**
+		*  rowid type
 		*/
-		static const std::string table_name;
+		typedef Id rowid_type;
+		
+		/**
+		 *  SQL table name
+		 */
+		//static const std::string table_name;
+		static const std::string& table_name();
 
-		/*
-		*  Set ROWID
-		*/
-		static void set_rowid(T & t,int64_t id)
+		/**
+		 *  ROWID member
+		 */
+		static rowid_type T::* rowid()
 		{
-			t.ID = id;
+			return &T::ID;
 		}
 
-		/*
-		*  Get ROWID
-		*/
-		static int64_t get_rowid(const T & t)
-		{
-			return t.ID;
-		}
-
-		/*
-		*  Create a new object
-		*/
+		/**
+		 *  Create a new object
+		 */
 		static std::shared_ptr<T> new_object() {
 			std::shared_ptr<T> t = std::make_shared<T>();
-			set_rowid(*t.get(), 0);
+			(*t).*rowid() = 0;
 			return t;
 		};
 
-		/*
+		/**
 		*  Parse from table
 		*/
 		static void from_datatable(int nCol, char** azVals, char** azCols, T & t);
 
-		/*
+		/**
 		*  Write to table
 		*/
 		static void to_datatable(int nCol, char** azVals, char** azCols, const T & t);
 
-		/*
+		/**
 		*  Default SQl SELECT statement
 		*/
 		static std::string select_sql()
 		{
 			sql_statement sql;
-			sql << "SELECT * FROM " << table_name;
+			sql << "SELECT * FROM " << table_name();
 			return sql.str();
 		}
 
-		/*
+		/**
 		*  Default SQl SELECT statement
 		*/
-		static std::string select_sql(int64_t id)
+		static std::string select_sql(const rowid_type& id)
 		{
 			sql_statement sql;
-			sql << "SELECT * FROM " << table_name << " WHERE ID=" << id << ";";
+			sql << "SELECT * FROM " << table_name() << " WHERE ID=" << id << ";";
 			return sql.str();
 		}
 
-		/*
+		/**
+		*  Default SQl DELETE statement
+		*/
+		static std::string delete_sql(const rowid_type & id)
+		{
+			sql_statement sql;
+			sql << "DELETE FROM " << table_name() << " WHERE ID=" << id << ";";
+			return sql.str();
+		}
+		/**
 		*  Default SQl DELETE statement
 		*/
 		static std::string delete_sql(const T & t)
 		{
-			sql_statement sql;
-			sql << "DELETE FROM " << table_name << " WHERE ID=" << get_rowid(t) << ";";
-			return sql.str();
+			return delete_sql(t.*rowid());
 		}
 
-		/*
+		/**
 		*  Default SQl INSERT statement
 		*/
 		static std::string insert_sql(const T& t)
 		{
 			sql_statement sql;
 			std::map< std::string, std::string >  values = get_values(t);
-			sql << "INSERT INTO " << table_name << " " << format_insert_values(values) << ";";
+			sql << "INSERT INTO " << table_name() << " " << format_insert_values(values) << ";";
 			return sql.str();
 		}
 
 
-		/*
+		/**
 		*  Default SQl UPDATE statement
 		*/
 		static std::string update_sql(const T& t)
 		{
-			return update_sql(t,get_rowid(t));
+			return update_sql(t,t.*rowid());
 		}
 
-		static std::string update_sql(const T& t, int64_t id)
+		/**
+		*  Default SQl UPDATE statement
+		*/
+		static std::string update_sql(const T& t, rowid_type id)
 		{
 			sql_statement sql;
 			std::map< std::string, std::string >  values = get_values(t);
-			sql << "UPDATE " << table_name << " SET " << format_update_values(values)
+			sql << "UPDATE " << table_name() << " SET " << format_update_values(values)
 				<< " WHERE ID=" << id;
 			return sql.str();
 		}
 
-		//typedef std::map<std::string, std::string> map_values;
-
-
-
-		/*
+		/**
 		*  Get object values
 		*/
 		static std::map<std::string, std::string> get_values(const T& t);
 
-		/*
+		/**
 		*  Format values for an INSERT statement
 		*/
 		static std::string format_insert_values(const std::map<std::string, std::string>& values)
@@ -152,7 +161,7 @@ namespace libORM
 			return sql.str();
 		}
 
-		/*
+		/**
 		*  Format values for an UPDATE statement
 		*/
 		static std::string format_update_values(const std::map<std::string, std::string>& values)
@@ -166,20 +175,10 @@ namespace libORM
 			}
 			return sql.str();
 		}
+
+	
+		//boost::fusion::set<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> columns;
+
 	};
-
-
-	//template< class T >
-	//inline boost::assign_detail::generic_list< std::pair
-	//	<
-	//	BOOST_DEDUCED_TYPENAME boost::assign_detail::assign_decay<std::string>::type,
-	//	BOOST_DEDUCED_TYPENAME boost::assign_detail::assign_decay<std::string>::type
-	//> >
-	//	values_list_of(const std::string& k, const T& t)
-	//{
-	//	typedef BOOST_DEDUCED_TYPENAME boost::assign_detail::assign_decay<std::string>::type k_type;
-	//	typedef BOOST_DEDUCED_TYPENAME boost::assign_detail::assign_decay<T>::type   t_type;
-	//	return boost::assign_detail::generic_list< std::pair<k_type, k_type> >()(k, sql_type_converter::to_sql(t));
-	//}
 
 }

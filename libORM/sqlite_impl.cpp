@@ -14,7 +14,19 @@ namespace libORM
 	/**********************************************/
 	sqlite_impl::sqlite_impl(const char* a_szDatabasePath)
 		: m_pDb(NULL)
-		, m_szDatabasePath(a_szDatabasePath)
+		, m_strDatabasePath(a_szDatabasePath)
+	{
+	}
+
+	/**********************************************/
+	//! Construct a SQLITE implementation.
+	/*!
+	@param a_szDatabasePath Path to the database file
+	*/
+	/**********************************************/
+	sqlite_impl::sqlite_impl(const std::string& a_strDatabasePath)
+		: m_pDb(NULL)
+		, m_strDatabasePath(a_strDatabasePath)
 	{
 	}
 
@@ -41,7 +53,7 @@ namespace libORM
 		if (m_pDb != NULL)
 			Close();
 
-		int i = sqlite3_open(m_szDatabasePath.c_str(), &m_pDb);
+		int i = sqlite3_open(m_strDatabasePath.c_str(), &m_pDb);
 		SQLITE_ASSERT(i);
 	}
 
