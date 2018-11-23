@@ -10,3 +10,7 @@ script:
   - cd build
   - cmake ..
   - make
+
+notifications:
+  email:
+    - toto.faiduski@gmail.com
