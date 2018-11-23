@@ -38,8 +38,8 @@ namespace libORM
 	template<class _Container>
 	int database::callback_GetAll(void* pList, int nCol, char** azVals, char** azCols)
 	{
-		auto elem = std::make_shared<_Container::value_type::element_type>();
-		table_mapper< _Container::value_type::element_type >::from_datatable(nCol, azVals, azCols, *elem);
+		auto elem = std::make_shared<typename _Container::value_type::element_type>();
+		table_mapper< typename _Container::value_type::element_type >::from_datatable(nCol, azVals, azCols, *elem);
 
 		back_inserter(*(static_cast<_Container*>(pList))) = elem;
 		return 0;
@@ -62,7 +62,7 @@ namespace libORM
 
 		// Execute SELECT statement
 		if (szSQL == NULL)
-			i = pimpl_->ExecuteSQL( table_mapper< _Container::value_type::element_type >::select_sql().c_str(), &database::callback_GetAll<_Container>, &l, &errmsg);
+			i = pimpl_->ExecuteSQL( table_mapper< typename _Container::value_type::element_type >::select_sql().c_str(), &database::callback_GetAll<_Container>, &l, &errmsg);
 		else
 			i = pimpl_->ExecuteSQL( szSQL, &database::callback_GetAll<_Container>, &l, &errmsg);
 	}
